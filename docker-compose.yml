@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  postgres:
+    container_name: postgres_db
+    image: postgres:13
+    environment:
+      - TZ=Asia/Bangkok
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=ppap2554
+      - PGDATA=postgres
+    volumes:
+      - ./postgres/data/:/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4:5.5
+    environment:
+      - TZ=Asia/Bangkok
+      - PGADMIN_DEFAULT_EMAIL=naserdoctor@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=p@ssw0rd
+    volumes:
+      - ./pgadmin:/root/.pgadmin
+      - ./pgadmin/data/:/var/lib/pgadmin/storage
+    ports:
+      - "8080:80"
+    links:
+      - "postgres:database"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
